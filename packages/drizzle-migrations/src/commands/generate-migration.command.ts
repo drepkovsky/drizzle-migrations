@@ -1,5 +1,4 @@
 import { BaseCommand } from './_base.command'
-/* eslint-disable no-restricted-syntax, no-await-in-loop */
 import type { DrizzleSnapshotJSON } from 'drizzle-kit/payload'
 import fs from 'node:fs'
 import prompts from 'prompts'
