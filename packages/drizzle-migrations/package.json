@@ -1,6 +1,6 @@
 {
   "name": "@drepkovsky/drizzle-migrations",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "Tiny tool for managing migrations in Drizzle",
   "scripts": {
     "build": "tsup",
