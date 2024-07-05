@@ -2,6 +2,9 @@
 
 Simple tool that ads `up` and `down` migration capability for drizzle projects.
 
+
+Automatic migration generation for drizzle was adapted from the **payloadcms** repository.
+
  **Warning**! This tool is work in progress and was only tested on `pg` databases, but should be working on `sqlite` and `mysql` too.
  This is also something that drizzle will probably have built-in inside `drizzle-kit` in the future.
 
