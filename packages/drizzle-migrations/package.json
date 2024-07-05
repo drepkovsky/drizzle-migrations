@@ -1,7 +1,7 @@
 {
   "name": "@drepkovsky/drizzle-migrations",
   "version": "0.1.0",
-  "description": "",
+  "description": "Tiny tool for managing migrations in Drizzle",
   "scripts": {
     "build": "tsup",
     "dev": "tsup --watch"
@@ -18,7 +18,15 @@
     "@types/prompts": "^2.4.9",
     "typescript": "^5.5.3"
   },
-  "keywords": [],
+  "keywords": [
+    "drizzle",
+    "migrations",
+    "orm",
+    "up migration",
+    "down migration",
+    "rollback",
+    "drepkovsky"
+  ],
   "author": "Dominik Repkovský",
   "license": "ISC",
   "dependencies": {

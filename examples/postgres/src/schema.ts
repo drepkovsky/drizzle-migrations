@@ -14,6 +14,7 @@ export const userRelations = relations(usersTable, (h) => ({
 export const postsTable = pgTable('posts', {
   id: serial('id').primaryKey(),
   title: varchar('title', { length: 255 }),
+  newColumn: varchar('new_column'),
   content: varchar('content'),
   userId: integer('user_id').references(() => usersTable.id),
 })
