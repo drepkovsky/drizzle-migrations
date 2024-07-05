@@ -42,16 +42,15 @@ export class MigrateUpCommand extends BaseCommand {
           path.join(this.ctx.migrationFolder, migrationFile.ts),
           __filename
         ) as Migration<ConfigDialect>
-        // biome-ignore lint/suspicious/noConsoleLog: <explanation>
-        console.log(`[Up]: Migration ${migrationName} is running`, migration)
         if (!migration.up) {
           throw new Error(`Migration ${migrationName} is missing an up function`)
         }
 
+        // biome-ignore lint/suspicious/noConsoleLog: <explanation>
+        console.log(`[Up]: Migration ${migrationName} is running`)
         await migration.up({ db: trx })
         await saveMigration(migrationName, currentBatch, { ...this.ctx, client: trx })
         noOfRunMigrations++
-
         // biome-ignore lint/suspicious/noConsoleLog: <explanation>
         console.log(`[Up]: Migration ${migrationName} run successfully`)
       }
