@@ -9,7 +9,7 @@ const program = new Command()
 program
   .name('drizzle-migrations')
   .description('Tiny helper for managing drizzle migrations in your project')
-  .version('0.1.1')
+  .version('0.1.3')
 
 program
   .command('generate')
