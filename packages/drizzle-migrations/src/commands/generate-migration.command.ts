@@ -82,10 +82,12 @@ export class GenerateMigration extends BaseCommand<GenerateMigrationOptions> {
       )
     )
 
-    console.log(`Migration created at ${filePath}.ts`)
+    // biome-ignore lint/suspicious/noConsoleLog: <explanation>
+    console.log(`[Generate]: Migration created at ${filePath}.ts`)
   }
 
   private getTemplate(upSQL?: string, downSQL?: string) {
+    const executeCommand = this.ctx.dialect === 'sqlite' ? 'run' : 'execute'
     return `
   import { sql } from 'drizzle-orm'
   import type { MigrationArgs } from '@drepkovsky/drizzle-migrations'
@@ -93,7 +95,7 @@ export class GenerateMigration extends BaseCommand<GenerateMigrationOptions> {
   export async function up({ db }: MigrationArgs<'${this.ctx.dialect}'>): Promise<void> {
   ${
     upSQL
-      ? `await db.execute(sql\`
+      ? `await db.${executeCommand}(sql\`
           ${upSQL}
         \`);
   `
@@ -104,7 +106,7 @@ export class GenerateMigration extends BaseCommand<GenerateMigrationOptions> {
   export async function down({ db }: MigrationArgs<'${this.ctx.dialect}'>): Promise<void> {
   ${
     downSQL
-      ? `await db.execute(sql\`
+      ? `await db.${executeCommand}(sql\`
           ${downSQL}
         \`);
   `

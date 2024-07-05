@@ -1,7 +1,8 @@
 import fs from 'node:fs'
 import path from 'node:path'
 import * as tsx from 'tsx/cjs/api'
-import type { ConfigWithMigrator } from '..'
+import type { ConfigDialect, ConfigWithMigrator, DBClient } from '..'
+import type { SQLWrapper } from 'drizzle-orm'
 
 export function resolveDrizzleConfig() {
   const configFileNames = ['drizzle.config.ts', 'drizzle.config.tsx']
@@ -70,17 +71,29 @@ export async function buildMigrationContext(drizzleConfigPath: string) {
   }
 
   return {
-    migrationFolder: drizzleConfig.out,
+    migrationFolder: path.join(drizzleFolder, drizzleConfig.out),
     schema: schemaObj,
     dialect: drizzleConfig.dialect,
-    getMigrator: drizzleConfig.getMigrator,
+    client: await drizzleConfig.getMigrator(),
+    migrationTable: drizzleConfig.migrations?.table || 'drizzle_migrations',
+    migrationSchema: drizzleConfig.migrations?.schema || 'public',
     opts: {},
   }
 }
 
-export type MigrationContext<TOpts extends Record<string, any>> = Omit<
-  Awaited<ReturnType<typeof buildMigrationContext>>,
-  'opts'
-> & {
+export type MigrationContext<
+  TOpts extends Record<string, any> = Record<string, any>,
+  TDialect extends ConfigDialect = ConfigDialect,
+> = Omit<Awaited<ReturnType<typeof buildMigrationContext>>, 'opts' | 'dialect' | 'client'> & {
   opts: TOpts
+  dialect: TDialect
+  client: DBClient<TDialect>
+}
+
+export function dbClientRun(db: DBClient<any>, sql: SQLWrapper) {
+  if ('run' in db) {
+    return db.run(sql)
+  }
+
+  return (db as any).execute(sql)
 }

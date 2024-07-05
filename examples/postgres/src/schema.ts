@@ -2,7 +2,7 @@ import { relations } from 'drizzle-orm'
 import { integer, pgTable, serial, uuid, varchar } from 'drizzle-orm/pg-core'
 
 export const usersTable = pgTable('users', {
-  id: serial('id'),
+  id: serial('id').primaryKey(),
   name: varchar('name'),
   uuid: uuid('slug'),
 })
@@ -12,7 +12,7 @@ export const userRelations = relations(usersTable, (h) => ({
 }))
 
 export const postsTable = pgTable('posts', {
-  id: serial('id'),
+  id: serial('id').primaryKey(),
   title: varchar('title', { length: 255 }),
   content: varchar('content'),
   userId: integer('user_id').references(() => usersTable.id),

@@ -3,7 +3,7 @@ import type { BetterSQLite3Database } from 'drizzle-orm/better-sqlite3'
 import type { MySql2Database } from 'drizzle-orm/mysql2'
 import type { PostgresJsDatabase } from 'drizzle-orm/postgres-js'
 
-type ConfigDialect = Config['dialect']
+export type ConfigDialect = Config['dialect']
 export type ConfigWithMigrator = Config &
   (
     | {
@@ -34,4 +34,9 @@ export type DBClient<TDialect extends ConfigDialect> = TDialect extends 'sqlite'
 
 export type MigrationArgs<TDialect extends ConfigDialect> = {
   db: DBClient<TDialect>
+}
+
+export type Migration<TDialect extends ConfigDialect> = {
+  up: (args: MigrationArgs<TDialect>) => Promise<void>
+  down: (args: MigrationArgs<TDialect>) => Promise<void>
 }
