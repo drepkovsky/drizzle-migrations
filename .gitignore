@@ -1,0 +1,9 @@
+node_modules
+
+.turbo
+.npmrc
+
+.env
+.env.local
+
+dist
