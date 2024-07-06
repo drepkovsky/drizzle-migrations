@@ -7,7 +7,7 @@
     "fix": "pnpm biome check --apply-unsafe ./packages/**/src",
     "format": "pnpm biome format --write ./packages/**/src",
     "lint": "pnpm biome lint ./packages/**/src",
-    "publish": "cd ./packages/drizzle-migrations && pnpm publish"
+    "release": "cd ./packages/drizzle-migrations && pnpm release"
   },
   "devDependencies": {
     "@biomejs/biome": "^1.8.3",
