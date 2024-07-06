@@ -31,6 +31,7 @@
   "license": "ISC",
   "dependencies": {
     "commander": "^12.1.0",
+    "console-table-printer": "^2.12.1",
     "prompts": "^2.4.2",
     "tsup": "^8.1.0",
     "tsx": "^4.16.2"

@@ -9,8 +9,10 @@ import {
   getMigrationFiles,
 } from '../helpers/migration'
 import { BaseCommand } from './_base.command'
+import { startTransaction } from '../helpers/db-helpers'
+import { isNullish } from '../helpers/misc-utils'
 
-export class MigrateDownCommand extends BaseCommand {
+export class MigrateDownCommand extends BaseCommand<{ batchToRollDownTo?: number }> {
   async run() {
     const migrationFiles = await getMigrationFiles(this.ctx)
 
@@ -24,6 +26,16 @@ export class MigrateDownCommand extends BaseCommand {
 
     const latestBatch = (await getLatestBatch(this.ctx)) ?? 0
 
+    if (!isNullish(this.ctx.opts.batchToRollDownTo)) {
+      if (this.ctx.opts.batchToRollDownTo > latestBatch) {
+        // biome-ignore lint/suspicious/noConsoleLog: <explanation>
+        console.log(
+          `[Down]: No migrations to run, batch ${this.ctx.opts.batchToRollDownTo} is higher than latest batch ${latestBatch}`
+        )
+        return
+      }
+    }
+
     if (!latestBatch) {
       // biome-ignore lint/suspicious/noConsoleLog: <explanation>
       console.log('[Down]: No migrations to run')
@@ -31,13 +43,17 @@ export class MigrateDownCommand extends BaseCommand {
     }
 
     let noOfRunMigrations = 0
-    await this.ctx.client.transaction(async (trx) => {
+    await startTransaction(this.ctx, async (trx) => {
       for (const migrationFile of migrationFiles) {
         // check if migration did not run already
         const migrationName = migrationFile.ts.split('/').pop()!.replace('.ts', '')
-        const batch = await getMigrationBatch(migrationName, { ...this.ctx, client: trx })
+        const batch = await getMigrationBatch(migrationName, { ...this.ctx, client: trx as any })
 
-        if (!batch || batch !== latestBatch) {
+        if (
+          !batch || isNullish(this.ctx.opts.batchToRollDownTo)
+            ? batch !== latestBatch
+            : batch < this.ctx.opts.batchToRollDownTo
+        ) {
           // console.log(`Migration ${migrationName} already ran in batch ${batch}`)
           continue
         }
@@ -53,7 +69,7 @@ export class MigrateDownCommand extends BaseCommand {
         // biome-ignore lint/suspicious/noConsoleLog: <explanation>
         console.log(`[Down]: ${migrationName} is running`)
         await migration.down({ db: trx })
-        await deleteMigrationByName(migrationName, { ...this.ctx, client: trx })
+        await deleteMigrationByName(migrationName, { ...this.ctx, client: trx as any })
         // biome-ignore lint/suspicious/noConsoleLog: <explanation>
         console.log(`[Down]: ${migrationName} run successfully`)
         noOfRunMigrations++

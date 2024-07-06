@@ -1,7 +1,6 @@
 import { sql } from 'drizzle-orm'
 import fs from 'node:fs'
 import fsp from 'node:fs/promises'
-import type { DBClient } from '..'
 import type { MigrationContext } from './drizzle-config'
 
 /**
@@ -35,12 +34,11 @@ export async function ensureMigrationTable(ctx: MigrationContext) {
   const migrationSchema = ctx.migrationSchema
 
   if (ctx.dialect === 'postgresql') {
-    const client = ctx.client as DBClient<'postgresql'>
     // ensure schema
-    await client.execute(sql.raw(`CREATE SCHEMA IF NOT EXISTS ${migrationSchema}`))
+    await ctx.client.execute(sql.raw(`CREATE SCHEMA IF NOT EXISTS ${migrationSchema}`))
 
     // ensure table
-    await client.execute(
+    await ctx.client.execute(
       sql.raw(
         `CREATE TABLE IF NOT EXISTS "${migrationSchema}"."${migrationTable}" (name TEXT PRIMARY KEY, batch INT NOT NULL)`
       )
@@ -48,8 +46,7 @@ export async function ensureMigrationTable(ctx: MigrationContext) {
   }
 
   if (ctx.dialect === 'mysql') {
-    const client = ctx.client as DBClient<'mysql'>
-    await client.execute(
+    await ctx.client.execute(
       sql.raw(
         `CREATE TABLE IF NOT EXISTS "${migrationTable}" (name TEXT PRIMARY KEY, batch INT NOT NULL)`
       )
@@ -57,8 +54,7 @@ export async function ensureMigrationTable(ctx: MigrationContext) {
   }
 
   if (ctx.dialect === 'sqlite') {
-    const client = ctx.client as DBClient<'sqlite'>
-    await client.run(
+    await ctx.client.run(
       sql.raw(
         `CREATE TABLE IF NOT EXISTS "${migrationTable}" (name TEXT PRIMARY KEY, batch INT NOT NULL)`
       )
@@ -68,21 +64,18 @@ export async function ensureMigrationTable(ctx: MigrationContext) {
 
 export function getLatestBatch(ctx: MigrationContext) {
   if (ctx.dialect === 'sqlite') {
-    const client = ctx.client as DBClient<'sqlite'>
-    return client
+    return ctx.client
       .run(sql.raw(`SELECT MAX(batch) as batch FROM "${ctx.migrationTable}"`))
       .then((r: any) => r[0]?.batch as number)
   }
 
   if (ctx.dialect === 'mysql') {
-    const client = ctx.client as DBClient<'mysql'>
-    return client
+    return ctx.client
       .execute(sql.raw(`SELECT MAX(batch) as batch FROM "${ctx.migrationTable}"`))
       .then((r) => r[0].batch as number)
   }
   if (ctx.dialect === 'postgresql') {
-    const client = ctx.client as DBClient<'postgresql'>
-    return client
+    return ctx.client
       .execute(
         sql.raw(`SELECT MAX(batch) as batch FROM "${ctx.migrationSchema}"."${ctx.migrationTable}"`)
       )
@@ -96,21 +89,17 @@ export function getLatestBatch(ctx: MigrationContext) {
 
 export function getMigrationBatch(migrationName: string, ctx: MigrationContext) {
   if (ctx.dialect === 'sqlite') {
-    const client = ctx.client as DBClient<'sqlite'>
-    return client
+    return ctx.client
       .run(sql.raw(`SELECT batch FROM "${ctx.migrationTable}" WHERE name = '${migrationName}'`))
       .then((r: any) => r[0]?.batch as number)
   }
-
   if (ctx.dialect === 'mysql') {
-    const client = ctx.client as DBClient<'mysql'>
-    return client
+    return ctx.client
       .execute(sql.raw(`SELECT batch FROM "${ctx.migrationTable}" WHERE name = '${migrationName}'`))
       .then((r) => r[0].batch as number)
   }
   if (ctx.dialect === 'postgresql') {
-    const client = ctx.client as DBClient<'postgresql'>
-    return client
+    return ctx.client
       .execute(
         sql.raw(
           `SELECT batch FROM "${ctx.migrationSchema}"."${ctx.migrationTable}" WHERE name = '${migrationName}'`
@@ -126,24 +115,21 @@ export function getMigrationBatch(migrationName: string, ctx: MigrationContext) 
 
 export function saveMigration(migrationName: string, batch: number, ctx: MigrationContext) {
   if (ctx.dialect === 'sqlite') {
-    const client = ctx.client as DBClient<'sqlite'>
-    return client.run(
+    return ctx.client.run(
       sql.raw(
         `INSERT INTO "${ctx.migrationTable}" (name,batch) VALUES ('${migrationName}',${batch})`
       )
     )
   }
   if (ctx.dialect === 'mysql') {
-    const client = ctx.client as DBClient<'mysql'>
-    return client.execute(
+    return ctx.client.execute(
       sql.raw(
         `INSERT INTO "${ctx.migrationTable}" (name,batch) VALUES ('${migrationName}',${batch})`
       )
     )
   }
   if (ctx.dialect === 'postgresql') {
-    const client = ctx.client as DBClient<'postgresql'>
-    return client.execute(
+    return ctx.client.execute(
       sql.raw(
         `INSERT INTO "${ctx.migrationSchema}"."${ctx.migrationTable}" (name,batch) VALUES ('${migrationName}',${batch})`
       )
@@ -154,20 +140,17 @@ export function saveMigration(migrationName: string, batch: number, ctx: Migrati
 
 export function deleteMigrationByName(migrationName: string, ctx: MigrationContext) {
   if (ctx.dialect === 'sqlite') {
-    const client = ctx.client as DBClient<'sqlite'>
-    return client.run(
+    return ctx.client.run(
       sql.raw(`DELETE FROM "${ctx.migrationTable}" WHERE name = '${migrationName}'`)
     )
   }
   if (ctx.dialect === 'mysql') {
-    const client = ctx.client as DBClient<'mysql'>
-    return client.execute(
+    return ctx.client.execute(
       sql.raw(`DELETE FROM "${ctx.migrationTable}" WHERE name = '${migrationName}'`)
     )
   }
   if (ctx.dialect === 'postgresql') {
-    const client = ctx.client as DBClient<'postgresql'>
-    return client.execute(
+    return ctx.client.execute(
       sql.raw(
         `DELETE FROM "${ctx.migrationSchema}"."${ctx.migrationTable}" WHERE name = '${migrationName}'`
       )
@@ -178,16 +161,15 @@ export function deleteMigrationByName(migrationName: string, ctx: MigrationConte
 
 export function deleteMigrationUntilBatch(batch: number, ctx: MigrationContext) {
   if (ctx.dialect === 'sqlite') {
-    const client = ctx.client as DBClient<'sqlite'>
-    return client.run(sql.raw(`DELETE FROM "${ctx.migrationTable}" WHERE batch >= ${batch}`))
+    return ctx.client.run(sql.raw(`DELETE FROM "${ctx.migrationTable}" WHERE batch >= ${batch}`))
   }
   if (ctx.dialect === 'mysql') {
-    const client = ctx.client as DBClient<'mysql'>
-    return client.execute(sql.raw(`DELETE FROM "${ctx.migrationTable}" WHERE batch >= ${batch}`))
+    return ctx.client.execute(
+      sql.raw(`DELETE FROM "${ctx.migrationTable}" WHERE batch >= ${batch}`)
+    )
   }
   if (ctx.dialect === 'postgresql') {
-    const client = ctx.client as DBClient<'postgresql'>
-    return client.execute(
+    return ctx.client.execute(
       sql.raw(
         `DELETE FROM "${ctx.migrationSchema}"."${ctx.migrationTable}" WHERE batch >= ${batch}`
       )

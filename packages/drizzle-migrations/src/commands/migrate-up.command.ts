@@ -1,6 +1,7 @@
 import path from 'node:path'
 import * as tsx from 'tsx/cjs/api'
 import type { ConfigDialect, Migration } from '..'
+import { startTransaction } from '../helpers/db-helpers'
 import {
   ensureMigrationTable,
   getLatestBatch,
@@ -27,11 +28,14 @@ export class MigrateUpCommand extends BaseCommand {
 
     let noOfRunMigrations = 0
 
-    await this.ctx.client.transaction(async (trx) => {
+    await startTransaction(this.ctx, async (trx) => {
       for (const migrationFile of migrationFiles) {
         // check if migration did not run already
         const migrationName = migrationFile.ts.split('/').pop()!.replace('.ts', '')
-        const batch = await getMigrationBatch(migrationName, { ...this.ctx, client: trx })
+        const batch = await getMigrationBatch(migrationName, {
+          ...this.ctx,
+          client: trx as any,
+        })
 
         if (batch) {
           // console.log(`Migration ${migrationName} already ran in batch ${batch}`)
@@ -49,7 +53,7 @@ export class MigrateUpCommand extends BaseCommand {
         // biome-ignore lint/suspicious/noConsoleLog: <explanation>
         console.log(`[Up]: Migration ${migrationName} is running`)
         await migration.up({ db: trx })
-        await saveMigration(migrationName, currentBatch, { ...this.ctx, client: trx })
+        await saveMigration(migrationName, currentBatch, { ...this.ctx, client: trx as any })
         noOfRunMigrations++
         // biome-ignore lint/suspicious/noConsoleLog: <explanation>
         console.log(`[Up]: Migration ${migrationName} run successfully`)

@@ -53,9 +53,7 @@ export async function buildMigrationContext(drizzleConfigPath: string) {
   }
 
   if (!drizzleConfig.getMigrator) {
-    throw new Error(
-      'Drizzle config must have a "getMigrator" field specified, so that migrations can be generated.'
-    )
+    throw new Error('Drizzle config must have a "getMigrator" field specified.')
   }
 
   const drizzleFolder = path.dirname(drizzleConfigPath)
@@ -74,26 +72,35 @@ export async function buildMigrationContext(drizzleConfigPath: string) {
     migrationFolder: path.join(drizzleFolder, drizzleConfig.out),
     schema: schemaObj,
     dialect: drizzleConfig.dialect,
-    client: await drizzleConfig.getMigrator(),
+    client: (await drizzleConfig.getMigrator()) as DBClient<typeof drizzleConfig.dialect>,
     migrationTable: drizzleConfig.migrations?.table || 'drizzle_migrations',
     migrationSchema: drizzleConfig.migrations?.schema || 'public',
     opts: {},
-  }
+  } as MigrationContext
 }
 
 export type MigrationContext<
   TOpts extends Record<string, any> = Record<string, any>,
   TDialect extends ConfigDialect = ConfigDialect,
-> = Omit<Awaited<ReturnType<typeof buildMigrationContext>>, 'opts' | 'dialect' | 'client'> & {
-  opts: TOpts
+> = {
+  migrationFolder: string
+  schema: Record<string, any>
   dialect: TDialect
   client: DBClient<TDialect>
-}
-
-export function dbClientRun(db: DBClient<any>, sql: SQLWrapper) {
-  if ('run' in db) {
-    return db.run(sql)
-  }
-
-  return (db as any).execute(sql)
-}
+  migrationTable: string
+  migrationSchema: string
+  opts: TOpts
+} & (
+  | {
+      dialect: 'sqlite'
+      client: DBClient<'sqlite'>
+    }
+  | {
+      dialect: 'mysql'
+      client: DBClient<'mysql'>
+    }
+  | {
+      dialect: 'postgresql'
+      client: DBClient<'postgresql'>
+    }
+)

@@ -1,8 +1,10 @@
 import { Command } from 'commander'
 import { GenerateMigration } from './commands/generate-migration.command'
-import { MigrateUpCommand } from './commands/migrate-up.command'
-import { buildMigrationContext, resolveDrizzleConfig } from './helpers/drizzle-config'
 import { MigrateDownCommand } from './commands/migrate-down.command'
+import { MigrateUpCommand } from './commands/migrate-up.command'
+import { MigrationStatusCommand } from './commands/migration-status.command'
+import { startTransaction } from './helpers/db-helpers'
+import { buildMigrationContext, resolveDrizzleConfig } from './helpers/drizzle-config'
 
 const program = new Command()
 
@@ -14,12 +16,14 @@ program
 program
   .command('generate')
   .option('-n, --name <name>', 'Migration name', '')
+  .option('-f, --force', 'Force create migration if no schema changes detected')
   .action(async (options) => {
     const ctx = await buildMigrationContext(resolveDrizzleConfig())
     const command = new GenerateMigration({
       ...ctx,
       opts: {
         migrationName: options.name,
+        forceAcceptWarning: Boolean(options.force),
       },
     })
     await command.run()
@@ -39,11 +43,66 @@ program
 program
   .command('down')
   .description('Rollback last batch of migrations')
-  .action(async () => {
+  .option('-b, --batch [batch]', 'Rollback up to until specific batch instead of the last')
+  .action(async (opts) => {
     const ctx = await buildMigrationContext(resolveDrizzleConfig())
-    const command = new MigrateDownCommand(ctx)
+    const command = new MigrateDownCommand({
+      ...ctx,
+      opts: {
+        batchToRollDownTo: Number(opts.batch) ?? undefined,
+      },
+    })
     await command.run()
     process.exit(0)
+  })
+
+program
+  .command('status')
+  .description('Show current status of migrations')
+  .action(async () => {
+    const ctx = await buildMigrationContext(resolveDrizzleConfig())
+    const command = new MigrationStatusCommand(ctx)
+    await command.run()
+    process.exit(0)
+  })
+
+program
+  .command('fresh')
+  .description('Rollback all migrations')
+  .action(async () => {
+    const ctx = await buildMigrationContext(resolveDrizzleConfig())
+    const command = new MigrateDownCommand({
+      ...ctx,
+      opts: {
+        batchToRollDownTo: 0,
+      },
+    })
+    await command.run()
+    process.exit(0)
+  })
+
+program
+  .command('refresh')
+  .description('Rollback all migrations and run them again')
+  .action(async () => {
+    const ctx = await buildMigrationContext(resolveDrizzleConfig())
+
+    await startTransaction(ctx, async (trx) => {
+      const command = new MigrateDownCommand({
+        ...ctx,
+        client: trx as any,
+        opts: {
+          batchToRollDownTo: 0,
+        },
+      })
+      await command.run()
+      const upCommand = new MigrateUpCommand({
+        ...ctx,
+        client: trx as any,
+      })
+      await upCommand.run()
+      process.exit(0)
+    })
   })
 
 program.parse()
