@@ -8,10 +8,19 @@ import { buildMigrationContext, resolveDrizzleConfig } from './helpers/drizzle-c
 
 const program = new Command()
 
+const getVersionFromPackageJson = () => {
+  try {
+    const pkg = require('../package.json')
+    return pkg.version
+  } catch (e) {
+    return '0.0.0'
+  }
+}
+
 program
   .name('drizzle-migrations')
   .description('Tiny helper for managing drizzle migrations in your project')
-  .version('0.2.0')
+  .version(getVersionFromPackageJson())
 
 program
   .command('generate')

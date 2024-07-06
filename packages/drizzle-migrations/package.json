@@ -1,10 +1,11 @@
 {
   "name": "@drepkovsky/drizzle-migrations",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Tiny tool for managing migrations in Drizzle",
   "scripts": {
-    "build": "tsup",
-    "dev": "tsup --watch"
+    "build": "rimraf dist && tsup",
+    "dev": "tsup --watch",
+    "publish": "pnpm build && pnpm publish --access public"
   },
   "peerDependencies": {
     "drizzle-kit": "^0.22.8",
@@ -16,6 +17,7 @@
   "devDependencies": {
     "@types/node": "^20.14.9",
     "@types/prompts": "^2.4.9",
+    "rimraf": "^5.0.8",
     "typescript": "^5.5.3"
   },
   "keywords": [

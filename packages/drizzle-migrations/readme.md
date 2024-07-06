@@ -17,7 +17,7 @@ npm install @drepkovsky/drizzle-migrations # or yarn,pnpm,bun
 
 ## Configuration
 
-To make this work you must make a small changes in your `drizzle.config.ts` file
+To make this work you have to make small changes inside your `drizzle.config.ts` file
 
 ```ts
 import { defineConfigWithMigrator } from '@drepkovsky/drizzle-migrations'
