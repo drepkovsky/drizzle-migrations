@@ -14,7 +14,8 @@ import { isNullish } from '../helpers/misc-utils'
 
 export class MigrateDownCommand extends BaseCommand<{ batchToRollDownTo?: number }> {
   async run() {
-    const migrationFiles = await getMigrationFiles(this.ctx)
+    const migrationFiles = (await getMigrationFiles(this.ctx)).reverse()
+    console.log('migrationFiles', migrationFiles)
 
     if (!migrationFiles.length) {
       // biome-ignore lint/suspicious/noConsoleLog: <explanation>

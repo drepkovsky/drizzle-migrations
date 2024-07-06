@@ -87,22 +87,16 @@ program
   .action(async () => {
     const ctx = await buildMigrationContext(resolveDrizzleConfig())
 
-    await startTransaction(ctx, async (trx) => {
-      const command = new MigrateDownCommand({
-        ...ctx,
-        client: trx as any,
-        opts: {
-          batchToRollDownTo: 0,
-        },
-      })
-      await command.run()
-      const upCommand = new MigrateUpCommand({
-        ...ctx,
-        client: trx as any,
-      })
-      await upCommand.run()
-      process.exit(0)
+    const command = new MigrateDownCommand({
+      ...ctx,
+      opts: {
+        batchToRollDownTo: 0,
+      },
     })
+    await command.run()
+    const upCommand = new MigrateUpCommand(ctx)
+    await upCommand.run()
+    process.exit(0)
   })
 
 program.parse()
