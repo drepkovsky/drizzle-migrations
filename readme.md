@@ -65,6 +65,25 @@ npm run drizzle-migrations up
 npm run drizzle-migrations down
 ```
 
+### Rollback up to specific batch
+```bash
+npm run drizzle-migrations down --bach <batch-number>
+```
+
+### Get status of migrations
+```bash
+npm run drizzle-migrations status
+```
+
+### Rollback all migrations
+```bash
+npm run drizzle-migrations fresh
+```
+
+### Rollback all migrations and run them again
+```bash
+npm run drizzle-migrations refresh
+```
 
 
 ### Example of generated migration

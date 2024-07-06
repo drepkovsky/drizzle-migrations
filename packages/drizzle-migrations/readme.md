@@ -2,6 +2,9 @@
 
 Simple tool that ads `up` and `down` migration capability for drizzle projects.
 
+
+Automatic migration generation for drizzle was adapted from the **PayloadCMS** repository.
+
  **Warning**! This tool is work in progress and was only tested on `pg` databases, but should be working on `sqlite` and `mysql` too.
  This is also something that drizzle will probably have built-in inside `drizzle-kit` in the future.
 
@@ -62,6 +65,25 @@ npm run drizzle-migrations up
 npm run drizzle-migrations down
 ```
 
+### Rollback up to specific batch
+```bash
+npm run drizzle-migrations down --bach <batch-number>
+```
+
+### Get status of migrations
+```bash
+npm run drizzle-migrations status
+```
+
+### Rollback all migrations
+```bash
+npm run drizzle-migrations fresh
+```
+
+### Rollback all migrations and run them again
+```bash
+npm run drizzle-migrations refresh
+```
 
 
 ### Example of generated migration
