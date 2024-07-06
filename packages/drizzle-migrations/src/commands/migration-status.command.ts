@@ -1,6 +1,7 @@
 import { printTable } from 'console-table-printer'
 import { getMigrationBatch, getMigrationFiles } from '../helpers/migration'
 import { BaseCommand } from './_base.command'
+import { program } from 'commander'
 
 export class MigrationStatusCommand extends BaseCommand {
   async run(): Promise<void> {
@@ -29,7 +30,8 @@ export class MigrationStatusCommand extends BaseCommand {
       return a.name.localeCompare(b.name)
     })
 
+    // biome-ignore lint/suspicious/noConsoleLog: <explanation>
     console.log('Migration status:')
-    printTable(migrationTable)
+    printTable(sortedMigrationTable)
   }
 }
