@@ -1,6 +1,6 @@
 {
   "name": "@drepkovsky/drizzle-migrations",
-  "version": "0.2.3",
+  "version": "0.3.0",
   "description": "Tiny tool for managing migrations in Drizzle",
   "scripts": {
     "build": "rimraf dist && tsup",
@@ -38,10 +38,20 @@
     "tsup": "^8.1.0",
     "tsx": "^4.16.2"
   },
+  "main": "dist/index.cjs",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
   "exports": {
     ".": {
-      "default": "./dist/index.cjs",
-      "types": "./dist/index.d.ts"
-    }
+      "import": {
+        "types": "./dist/index.d.mts",
+        "default": "./dist/index.mjs"
+      },
+      "require": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.cjs"
+      }
+    },
+    "./package.json": "./package.json"
   }
 }
