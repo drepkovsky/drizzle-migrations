@@ -26,6 +26,7 @@ program
   .command('generate')
   .option('-n, --name <name>', 'Migration name', '')
   .option('-f, --force', 'Force create migration if no schema changes detected')
+  .option('--drop-cascade', 'Force all drop tables to cascade. Only for PostgreSQL')
   .action(async (options) => {
     const ctx = await buildMigrationContext(resolveDrizzleConfig())
     const command = new GenerateMigration({
@@ -33,6 +34,7 @@ program
       opts: {
         migrationName: options.name,
         forceAcceptWarning: Boolean(options.force),
+        dropCascade: Boolean(options.dropCascade),
       },
     })
     await command.run()

@@ -5,6 +5,7 @@ import prompts from 'prompts'
 type GenerateMigrationOptions = {
   migrationName: string
   forceAcceptWarning?: boolean
+  dropCascade?: boolean
 }
 
 export class GenerateMigration extends BaseCommand<GenerateMigrationOptions> {
@@ -75,17 +76,38 @@ export class GenerateMigration extends BaseCommand<GenerateMigrationOptions> {
     // write migration
     fs.writeFileSync(
       `${filePath}.ts`,
-      this.getTemplate(
-        sqlStatementsUp.length ? sqlStatementsUp?.join('\n') : undefined,
-        sqlStatementsDown.length ? sqlStatementsDown?.join('\n') : undefined
-      )
+      this.getTemplate({
+        up: sqlStatementsUp.length ? sqlStatementsUp?.join('\n') : undefined,
+        down: sqlStatementsDown.length ? sqlStatementsDown?.join('\n') : undefined,
+      })
     )
 
     // biome-ignore lint/suspicious/noConsoleLog: <explanation>
     console.log(`[Generate]: Migration created at ${filePath}.ts`)
   }
 
-  private getTemplate(upSQL?: string, downSQL?: string) {
+  private getTemplate(statement: { up: string; down: string }) {
+    const upSQL = statement.up
+    let downSQL = statement.down
+
+    // if we detect DROP TABLE syntax in downSQL ensure we add CASCADE if the user has specified it
+    if (
+      this.ctx.opts.dropCascade &&
+      downSQL?.includes('DROP TABLE') &&
+      this.ctx.dialect === 'postgresql'
+    ) {
+      // ensure find all lines that contain DROP TABLE and add CASCADE at the end if it doesn't already have it
+      downSQL = downSQL
+        .split('\n')
+        .map((line) => {
+          if (line.includes('DROP TABLE') && !line.includes('CASCADE')) {
+            return line.replace(';', ' CASCADE;')
+          }
+          return line
+        })
+        .join('\n')
+    }
+
     const executeCommand = this.ctx.dialect === 'sqlite' ? 'run' : 'execute'
     return `
   import { sql } from 'drizzle-orm'
