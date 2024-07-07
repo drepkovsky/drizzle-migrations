@@ -1,6 +1,7 @@
 import path from 'node:path'
 import * as tsx from 'tsx/cjs/api'
 import type { ConfigDialect, Migration } from '..'
+import { startTransaction } from '../helpers/db-helpers'
 import {
   deleteMigrationByName,
   ensureMigrationTable,
@@ -8,14 +9,12 @@ import {
   getMigrationBatch,
   getMigrationFiles,
 } from '../helpers/migration'
-import { BaseCommand } from './_base.command'
-import { startTransaction } from '../helpers/db-helpers'
 import { isNullish } from '../helpers/misc-utils'
+import { BaseCommand } from './_base.command'
 
 export class MigrateDownCommand extends BaseCommand<{ batchToRollDownTo?: number }> {
   async run() {
     const migrationFiles = (await getMigrationFiles(this.ctx)).reverse()
-    console.log('migrationFiles', migrationFiles)
 
     if (!migrationFiles.length) {
       // biome-ignore lint/suspicious/noConsoleLog: <explanation>
@@ -51,9 +50,11 @@ export class MigrateDownCommand extends BaseCommand<{ batchToRollDownTo?: number
         const batch = await getMigrationBatch(migrationName, { ...this.ctx, client: trx as any })
 
         if (
-          !batch || isNullish(this.ctx.opts.batchToRollDownTo)
+          !batch ||
+          (isNullish(this.ctx.opts.batchToRollDownTo) ||
+          Number.isNaN(this.ctx.opts.batchToRollDownTo)
             ? batch !== latestBatch
-            : batch < this.ctx.opts.batchToRollDownTo
+            : batch < this.ctx.opts.batchToRollDownTo)
         ) {
           // console.log(`Migration ${migrationName} already ran in batch ${batch}`)
           continue

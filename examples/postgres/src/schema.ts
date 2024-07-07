@@ -29,8 +29,8 @@ export const booksTable = pgTable('books', {
 export const postsBooksTable = pgTable(
   'posts_books',
   {
-    bookId: varchar('book_id').references(() => booksTable.id),
-    postId: varchar('post_id').references(() => postsTable.id),
+    bookId: uuid('book_id').references(() => booksTable.id),
+    postId: integer('post_id').references(() => postsTable.id),
   },
   (t) => ({
     compoundIndex: primaryKey({ columns: [t.bookId, t.postId] }),

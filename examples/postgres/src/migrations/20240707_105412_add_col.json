@@ -1,5 +1,5 @@
 {
-  "id": "42296fd8-a90a-404a-ace6-c94ba18f5f2a",
+  "id": "d4306399-169b-4672-8641-01ca387488d0",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -58,13 +58,13 @@
       "columns": {
         "book_id": {
           "name": "book_id",
-          "type": "varchar",
+          "type": "uuid",
           "primaryKey": false,
           "notNull": false
         },
         "post_id": {
           "name": "post_id",
-          "type": "varchar",
+          "type": "integer",
           "primaryKey": false,
           "notNull": false
         }
