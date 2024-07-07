@@ -1,5 +1,5 @@
 import { relations } from 'drizzle-orm'
-import { integer, pgTable, serial, uuid, varchar } from 'drizzle-orm/pg-core'
+import { integer, pgTable, primaryKey, serial, text, uuid, varchar } from 'drizzle-orm/pg-core'
 
 export const usersTable = pgTable('users', {
   id: serial('id').primaryKey(),
@@ -18,6 +18,24 @@ export const postsTable = pgTable('posts', {
   content: varchar('content'),
   userId: integer('user_id').references(() => usersTable.id),
 })
+
+export const booksTable = pgTable('books', {
+  id: uuid('id').primaryKey(),
+  title: varchar('title', { length: 64 }),
+  description: text('description'),
+  authorId: integer('user_id').references(() => usersTable.id),
+})
+
+export const postsBooksTable = pgTable(
+  'posts_books',
+  {
+    bookId: varchar('book_id').references(() => booksTable.id),
+    postId: varchar('post_id').references(() => postsTable.id),
+  },
+  (t) => ({
+    compoundIndex: primaryKey({ columns: [t.bookId, t.postId] }),
+  })
+)
 
 export const postRelations = relations(postsTable, (h) => ({
   user: h.one(usersTable, {
