@@ -12,7 +12,7 @@ import {
 import { isNullish } from '../helpers/misc-utils'
 import { BaseCommand } from './_base.command'
 
-export class MigrateDownCommand extends BaseCommand<{ batchToRollDownTo?: number }> {
+export class MigrationDownCommand extends BaseCommand<{ batchToRollDownTo?: number }> {
   async run() {
     const migrationFiles = (await getMigrationFiles(this.ctx)).reverse()
 

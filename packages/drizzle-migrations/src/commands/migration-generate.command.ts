@@ -8,7 +8,7 @@ type GenerateMigrationOptions = {
   dropCascade?: boolean
 }
 
-export class GenerateMigration extends BaseCommand<GenerateMigrationOptions> {
+export class MigrationGenerateCommand extends BaseCommand<GenerateMigrationOptions> {
   async run() {
     const dir = this.ctx.migrationFolder
     if (!fs.existsSync(dir)) {

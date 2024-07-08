@@ -11,7 +11,7 @@ import {
 } from '../helpers/migration'
 import { BaseCommand } from './_base.command'
 
-export class MigrateUpCommand extends BaseCommand {
+export class MigrationUpCommand extends BaseCommand {
   async run() {
     const migrationFiles = await getMigrationFiles(this.ctx)
 

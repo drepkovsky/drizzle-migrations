@@ -1,11 +1,26 @@
-import { defineConfig, type Config } from 'drizzle-kit'
+import { defineConfig as defineConfigOg, type Config } from 'drizzle-kit'
 import type { BetterSQLite3Database } from 'drizzle-orm/better-sqlite3'
 import type { MySql2Database } from 'drizzle-orm/mysql2'
 import type { PostgresJsDatabase } from 'drizzle-orm/postgres-js'
+export * from './seed/_base.seeder'
+export * from './seed/seed-runner'
 
 export type ConfigDialect = Config['dialect']
-export type ConfigWithMigrator = Config &
-  (
+export type DrizzleMigrationsConfig = Config & {
+  /**
+   * Configuration for seeders
+   */
+  seed?: {
+    /**
+     * Path to the directory containing seeders
+     */
+    dirPath: string
+    /**
+     * Seeder to run by default if no seeder name is specified
+     */
+    defaultSeeder?: string
+  }
+} & (
     | {
         dialect: 'postgresql'
         getMigrator: () => Promise<PostgresJsDatabase>
@@ -20,8 +35,15 @@ export type ConfigWithMigrator = Config &
       }
   )
 
-export function defineConfigWithMigrator(config: ConfigWithMigrator) {
-  return defineConfig(config)
+/**
+ * @deprecated Use `defineConfig` instead
+ */
+export function defineConfigWithMigrator(config: DrizzleMigrationsConfig) {
+  return defineConfigOg(config)
+}
+
+export function defineConfig(config: DrizzleMigrationsConfig) {
+  return defineConfigOg(config)
 }
 
 export type DBClient<TDialect extends ConfigDialect> = TDialect extends 'sqlite'

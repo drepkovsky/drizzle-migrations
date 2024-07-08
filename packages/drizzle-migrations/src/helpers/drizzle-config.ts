@@ -1,7 +1,7 @@
 import fs from 'node:fs'
 import path from 'node:path'
 import * as tsx from 'tsx/cjs/api'
-import type { ConfigDialect, ConfigWithMigrator, DBClient } from '..'
+import type { ConfigDialect, DrizzleMigrationsConfig, DBClient } from '..'
 import type { SQLWrapper } from 'drizzle-orm'
 
 export function resolveDrizzleConfig() {
@@ -30,9 +30,9 @@ export function resolveDrizzleConfig() {
 }
 
 export async function buildMigrationContext(drizzleConfigPath: string) {
-  let drizzleConfig: ConfigWithMigrator | undefined = undefined
+  let drizzleConfig: DrizzleMigrationsConfig | undefined = undefined
   try {
-    drizzleConfig = tsx.require(drizzleConfigPath, __filename).default as ConfigWithMigrator
+    drizzleConfig = tsx.require(drizzleConfigPath, __filename).default as DrizzleMigrationsConfig
   } catch (e) {
     console.error(e)
   }
@@ -76,6 +76,7 @@ export async function buildMigrationContext(drizzleConfigPath: string) {
     migrationTable: drizzleConfig.migrations?.table || 'drizzle_migrations',
     migrationSchema: drizzleConfig.migrations?.schema || 'public',
     opts: {},
+    seed: drizzleConfig.seed,
   } as MigrationContext
 }
 
@@ -90,6 +91,7 @@ export type MigrationContext<
   migrationTable: string
   migrationSchema: string
   opts: TOpts
+  seed?: DrizzleMigrationsConfig['seed']
 } & (
   | {
       dialect: 'sqlite'

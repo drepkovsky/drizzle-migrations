@@ -2,7 +2,7 @@ import type { ConfigDialect, DBClient } from '..'
 import type { MigrationContext } from './drizzle-config'
 
 export function startTransaction<TDialect extends ConfigDialect>(
-  ctx: MigrationContext<any, TDialect>,
+  ctx: Pick<MigrationContext<any, TDialect>, 'dialect' | 'client'>,
   cb: (trx: DBClient<TDialect>) => Promise<unknown>
 ) {
   if (ctx.dialect === 'sqlite') {

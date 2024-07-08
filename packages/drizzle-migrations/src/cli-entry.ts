@@ -1,10 +1,14 @@
 import { Command } from 'commander'
-import { GenerateMigration } from './commands/generate-migration.command'
-import { MigrateDownCommand } from './commands/migrate-down.command'
-import { MigrateUpCommand } from './commands/migrate-up.command'
+import toSnakeCase from 'lodash.snakecase'
+import { MigrationDownCommand } from './commands/migration-down.command'
+import { MigrationGenerateCommand } from './commands/migration-generate.command'
 import { MigrationStatusCommand } from './commands/migration-status.command'
-import { startTransaction } from './helpers/db-helpers'
+import { MigrationUpCommand } from './commands/migration-up.command'
+import { SeedCreateCommand } from './commands/seed-create.command'
+import { SeedRunCommand } from './commands/seed-run.command'
 import { buildMigrationContext, resolveDrizzleConfig } from './helpers/drizzle-config'
+import { getFileNameWithoutExtension } from './helpers/misc-utils'
+import { getSeederFiles } from './helpers/seed'
 
 const program = new Command()
 
@@ -24,15 +28,22 @@ program
 
 program
   .command('generate')
-  .option('-n, --name <name>', 'Migration name', '')
+  .argument('[name]', 'Migration name')
+  .option('-n, --name [name]', 'Migration name')
   .option('-f, --force', 'Force create migration if no schema changes detected')
   .option('--drop-cascade', 'Force all drop tables to cascade. Only for PostgreSQL')
   .action(async (options) => {
     const ctx = await buildMigrationContext(resolveDrizzleConfig())
-    const command = new GenerateMigration({
+
+    if (!options.name) {
+      console.error('Migration name is required')
+      process.exit(1)
+    }
+
+    const command = new MigrationGenerateCommand({
       ...ctx,
       opts: {
-        migrationName: options.name,
+        migrationName: toSnakeCase((options.name ?? '').trim()),
         forceAcceptWarning: Boolean(options.force),
         dropCascade: Boolean(options.dropCascade),
       },
@@ -46,7 +57,7 @@ program
   .description('Run all pending migrations')
   .action(async () => {
     const ctx = await buildMigrationContext(resolveDrizzleConfig())
-    const command = new MigrateUpCommand(ctx)
+    const command = new MigrationUpCommand(ctx)
     await command.run()
     process.exit(0)
   })
@@ -57,7 +68,7 @@ program
   .option('-b, --batch [batch]', 'Rollback up to until specific batch instead of the last')
   .action(async (opts) => {
     const ctx = await buildMigrationContext(resolveDrizzleConfig())
-    const command = new MigrateDownCommand({
+    const command = new MigrationDownCommand({
       ...ctx,
       opts: {
         batchToRollDownTo: Number(opts.batch) ?? undefined,
@@ -82,7 +93,7 @@ program
   .description('Rollback all migrations')
   .action(async () => {
     const ctx = await buildMigrationContext(resolveDrizzleConfig())
-    const command = new MigrateDownCommand({
+    const command = new MigrationDownCommand({
       ...ctx,
       opts: {
         batchToRollDownTo: 0,
@@ -98,15 +109,81 @@ program
   .action(async () => {
     const ctx = await buildMigrationContext(resolveDrizzleConfig())
 
-    const command = new MigrateDownCommand({
+    const command = new MigrationDownCommand({
       ...ctx,
       opts: {
         batchToRollDownTo: 0,
       },
     })
     await command.run()
-    const upCommand = new MigrateUpCommand(ctx)
+    const upCommand = new MigrationUpCommand(ctx)
     await upCommand.run()
+    process.exit(0)
+  })
+
+program
+  .command('seed:create')
+  .description('Create a new seeder')
+  .argument('[name]', 'Seeder name')
+  .option('-n, --name [name]', 'Seeder name')
+  .action(async (opts) => {
+    const ctx = await buildMigrationContext(resolveDrizzleConfig())
+    if (!ctx.seed) {
+      console.error('Seed configuration is not defined in drizzle config')
+      process.exit(1)
+    }
+
+    if (!opts.name) {
+      console.error('Seeder name is required')
+      process.exit(1)
+    }
+
+    const command = new SeedCreateCommand({
+      ...ctx,
+      opts: {
+        seederName: toSnakeCase(opts.name),
+      },
+    })
+
+    await command.run()
+
+    process.exit(0)
+  })
+
+program
+  .command('seed:run')
+  .argument('[name]', 'Seeder name')
+  .option('-n, --name [name]', 'Seeder name')
+  .description('Run seeders')
+  .action(async (opts) => {
+    const ctx = await buildMigrationContext(resolveDrizzleConfig())
+    if (!ctx.seed) {
+      console.error('Seed configuration is not defined in drizzle config')
+      process.exit(1)
+    }
+
+    if (!opts.name) {
+      const files = await getSeederFiles(ctx)
+
+      console.error('Seeder name is required')
+      console.error('Available seeders:')
+      for (const file of files) {
+        const name = getFileNameWithoutExtension(file)
+        console.error(`- ${name}`)
+      }
+
+      process.exit(1)
+    }
+
+    const command = new SeedRunCommand({
+      ...ctx,
+      opts: {
+        seederName: toSnakeCase(opts.name),
+      },
+    })
+
+    await command.run()
+
     process.exit(0)
   })
 
