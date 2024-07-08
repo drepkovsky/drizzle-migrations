@@ -131,7 +131,7 @@ program
     }
 
     if (!opts.name) {
-      opts.name === ctx.seed?.defaultSeeder ?? 'db-seeder'
+      opts.name = ctx.seed?.defaultSeeder ?? 'db-seeder'
     }
 
     const command = new SeedCreateCommand({
@@ -158,7 +158,7 @@ program
     }
 
     if (!opts.name) {
-      opts.name === ctx.seed?.defaultSeeder ?? 'db-seeder'
+      opts.name = ctx.seed?.defaultSeeder ?? 'db-seeder'
     }
 
     const command = new SeedRunCommand({
