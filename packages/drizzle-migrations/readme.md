@@ -20,12 +20,12 @@ npm install @drepkovsky/drizzle-migrations # or yarn,pnpm,bun
 To make this work you have to make small changes inside your `drizzle.config.ts` file
 
 ```ts
-import { defineConfigWithMigrator } from '@drepkovsky/drizzle-migrations'
+import { defineConfig } from '@drepkovsky/drizzle-migrations'
 import { drizzle } from 'drizzle-orm/postgres-js'
 import postgres from 'postgres'
 
-// notice how we are not using definedConfig from drizzle but our custom definedConfigWithMigrator
-export default defineConfigWithMigrator({
+// notice how we are not using `defineConfig` from drizzle but from `@drepkovsky/drizzle-migrations`
+export default defineConfig({
   schema: './src/schema.ts',
   dialect: 'postgresql',
   dbCredentials: {  ...  },
@@ -45,6 +45,9 @@ export default defineConfigWithMigrator({
 
     return drizzle(migrationClient)
   }, 
+
+  // only needed if you want to use seed commands
+  seed: { dirsPath: './src/seeders', defaultSeeder: 'db-seeder' }
 })
 ```
 
@@ -83,6 +86,16 @@ npm run drizzle-migrations fresh
 ### Rollback all migrations and run them again
 ```bash
 npm run drizzle-migrations refresh
+```
+
+### Create seeder
+```bash
+npm run drizzle-migrations seed:create --name <seeder-name>
+```
+
+### Run seeders
+```bash
+npm run drizzle-migrations seed:run --name <seeder-name> // default seeder is db-seeder
 ```
 
 

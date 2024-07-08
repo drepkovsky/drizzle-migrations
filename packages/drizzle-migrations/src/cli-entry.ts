@@ -1,6 +1,6 @@
 import { Command } from 'commander'
-import toSnakeCase from 'lodash.snakecase'
 import toKebabCase from 'lodash.kebabcase'
+import toSnakeCase from 'lodash.snakecase'
 import { MigrationDownCommand } from './commands/migration-down.command'
 import { MigrationGenerateCommand } from './commands/migration-generate.command'
 import { MigrationStatusCommand } from './commands/migration-status.command'
@@ -8,8 +8,6 @@ import { MigrationUpCommand } from './commands/migration-up.command'
 import { SeedCreateCommand } from './commands/seed-create.command'
 import { SeedRunCommand } from './commands/seed-run.command'
 import { buildMigrationContext, resolveDrizzleConfig } from './helpers/drizzle-config'
-import { getFileNameWithoutExtension } from './helpers/misc-utils'
-import { getSeederFiles } from './helpers/seed'
 
 const program = new Command()
 
@@ -124,7 +122,7 @@ program
 program
   .command('seed:create')
   .description('Create a new seeder')
-  .option('-n, --name <name>', 'Seeder name', 'db-seeder')
+  .option('-n, --name <name>', 'Seeder name')
   .action(async (opts) => {
     const ctx = await buildMigrationContext(resolveDrizzleConfig())
     if (!ctx.seed) {
@@ -133,8 +131,7 @@ program
     }
 
     if (!opts.name) {
-      console.error('Seeder name is required')
-      process.exit(1)
+      opts.name === ctx.seed?.defaultSeeder ?? 'db-seeder'
     }
 
     const command = new SeedCreateCommand({
@@ -151,7 +148,7 @@ program
 
 program
   .command('seed:run')
-  .option('-n, --name <name>', 'Seeder name', 'db-seeder')
+  .option('-n, --name <name>', 'Seeder name')
   .description('Run seeders')
   .action(async (opts) => {
     const ctx = await buildMigrationContext(resolveDrizzleConfig())
@@ -161,16 +158,7 @@ program
     }
 
     if (!opts.name) {
-      const files = await getSeederFiles(ctx)
-
-      console.error('Seeder name is required')
-      console.error('Available seeders:')
-      for (const file of files) {
-        const name = getFileNameWithoutExtension(file)
-        console.error(`- ${name}`)
-      }
-
-      process.exit(1)
+      opts.name === ctx.seed?.defaultSeeder ?? 'db-seeder'
     }
 
     const command = new SeedRunCommand({
