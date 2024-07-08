@@ -12,8 +12,12 @@ export class SeedRunner<TDialect extends ConfigDialect> {
   ): Promise<void> {
     await startTransaction(this.ctx, async (db) => {
       const state: Record<string, any> = {}
+      // biome-ignore lint/suspicious/noConsoleLog: <explanation>
+      console.log('[Running seeder]:', seeder.name)
       const instance = new seeder()
       await instance.seed({ db, state })
+      // biome-ignore lint/suspicious/noConsoleLog: <explanation>
+      console.log('[Seeder completed]:', seeder.name)
     })
   }
 }

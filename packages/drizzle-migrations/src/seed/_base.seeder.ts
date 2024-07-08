@@ -15,7 +15,11 @@ export abstract class BaseSeeder<TDialect extends ConfigDialect> {
     const state: Record<string, any> = {}
     for (const s of seeder) {
       const seeder = new s()
+      // biome-ignore lint/suspicious/noConsoleLog: <explanation>
+      console.log('[Running seeder]:', seeder.constructor.name)
       await seeder.seed({ db, state })
+      // biome-ignore lint/suspicious/noConsoleLog: <explanation>
+      console.log('[Seeder completed]:', seeder.constructor.name)
     }
   }
 }

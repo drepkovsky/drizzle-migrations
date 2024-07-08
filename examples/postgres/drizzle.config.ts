@@ -1,7 +1,7 @@
-import { defineConfigWithMigrator } from '@drepkovsky/drizzle-migrations'
+import { defineConfig } from '@drepkovsky/drizzle-migrations'
 import { drizzle } from 'drizzle-orm/postgres-js'
 import postgres from 'postgres'
-export default defineConfigWithMigrator({
+export default defineConfig({
   schema: './src/schema.ts',
   dialect: 'postgresql',
   dbCredentials: {
@@ -25,4 +25,6 @@ export default defineConfigWithMigrator({
 
     return drizzle(migrationClient)
   },
+
+  seed: { dirPath: './src/seeders', defaultSeeder: 'default-seeder' },
 })

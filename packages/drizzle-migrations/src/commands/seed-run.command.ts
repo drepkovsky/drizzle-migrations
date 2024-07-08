@@ -28,11 +28,7 @@ export class SeedRunCommand extends BaseCommand<{ seederName: string }> {
 
       const seedRunner = new SeedRunner(this.ctx)
 
-      // biome-ignore lint/suspicious/noConsoleLog: <explanation>
-      console.log(`[Seed run]: Seeder ${seederName} is running`)
-      seedRunner.run(seeder, {})
-      // biome-ignore lint/suspicious/noConsoleLog: <explanation>
-      console.log(`[Seed run]: Seeder ${seederName} run successfully`)
+      await seedRunner.run(seeder, {})
     }
   }
 }

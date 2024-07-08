@@ -17,6 +17,7 @@ export type DrizzleMigrationsConfig = Config & {
     dirPath: string
     /**
      * Seeder to run by default if no seeder name is specified
+     * @default 'db-seeder'
      */
     defaultSeeder?: string
   }

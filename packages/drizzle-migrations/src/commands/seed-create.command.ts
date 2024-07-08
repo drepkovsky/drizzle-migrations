@@ -6,7 +6,12 @@ import { getFileNameWithoutExtension } from '../helpers/misc-utils'
 
 export class SeedCreateCommand extends BaseCommand<{ seederName: string }> {
   async run() {
-    const dir = this.ctx.migrationFolder
+    if (!this.ctx.seed) {
+      console.error('Seed configuration is not defined in drizzle config')
+      process.exit(1)
+    }
+
+    const dir = this.ctx.seed.dirPath
     if (!fs.existsSync(dir)) {
       fs.mkdirSync(dir)
     }
@@ -29,7 +34,7 @@ export class SeedCreateCommand extends BaseCommand<{ seederName: string }> {
       process.exit(1)
     }
 
-    // write migration
+    // write seeder
     fs.writeFileSync(`${filePath}.ts`, this.getTemplate())
 
     // biome-ignore lint/suspicious/noConsoleLog: <explanation>
@@ -42,7 +47,7 @@ export class SeedCreateCommand extends BaseCommand<{ seederName: string }> {
     nameInPascal = nameInPascal.charAt(0).toUpperCase() + nameInPascal.slice(1)
 
     return `
-import { BaseSeeder, type SeederContext } from './_base.seeder'
+import { BaseSeeder, type SeederContext } from '@drepkovsky/drizzle-migrations'
 
 export default class ${nameInPascal} extends BaseSeeder<'${this.ctx.dialect}'> {
   async seed(ctx: SeederContext<'${this.ctx.dialect}'>) {

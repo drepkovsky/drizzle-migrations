@@ -1,5 +1,6 @@
 import { Command } from 'commander'
 import toSnakeCase from 'lodash.snakecase'
+import toKebabCase from 'lodash.kebabcase'
 import { MigrationDownCommand } from './commands/migration-down.command'
 import { MigrationGenerateCommand } from './commands/migration-generate.command'
 import { MigrationStatusCommand } from './commands/migration-status.command'
@@ -28,8 +29,7 @@ program
 
 program
   .command('generate')
-  .argument('[name]', 'Migration name')
-  .option('-n, --name [name]', 'Migration name')
+  .option('-n, --name <name>', 'Migration name')
   .option('-f, --force', 'Force create migration if no schema changes detected')
   .option('--drop-cascade', 'Force all drop tables to cascade. Only for PostgreSQL')
   .action(async (options) => {
@@ -124,8 +124,7 @@ program
 program
   .command('seed:create')
   .description('Create a new seeder')
-  .argument('[name]', 'Seeder name')
-  .option('-n, --name [name]', 'Seeder name')
+  .option('-n, --name <name>', 'Seeder name', 'db-seeder')
   .action(async (opts) => {
     const ctx = await buildMigrationContext(resolveDrizzleConfig())
     if (!ctx.seed) {
@@ -141,7 +140,7 @@ program
     const command = new SeedCreateCommand({
       ...ctx,
       opts: {
-        seederName: toSnakeCase(opts.name),
+        seederName: toKebabCase(opts.name),
       },
     })
 
@@ -152,8 +151,7 @@ program
 
 program
   .command('seed:run')
-  .argument('[name]', 'Seeder name')
-  .option('-n, --name [name]', 'Seeder name')
+  .option('-n, --name <name>', 'Seeder name', 'db-seeder')
   .description('Run seeders')
   .action(async (opts) => {
     const ctx = await buildMigrationContext(resolveDrizzleConfig())
@@ -178,7 +176,7 @@ program
     const command = new SeedRunCommand({
       ...ctx,
       opts: {
-        seederName: toSnakeCase(opts.name),
+        seederName: toKebabCase(opts.name),
       },
     })
 

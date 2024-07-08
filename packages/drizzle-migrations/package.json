@@ -16,6 +16,7 @@
   },
   "devDependencies": {
     "@types/lodash.camelcase": "^4.3.9",
+    "@types/lodash.kebabcase": "^4.1.9",
     "@types/lodash.snakecase": "^4.1.9",
     "@types/node": "^20.14.9",
     "@types/prompts": "^2.4.9",
@@ -37,6 +38,7 @@
     "commander": "^12.1.0",
     "console-table-printer": "^2.12.1",
     "lodash.camelcase": "^4.3.0",
+    "lodash.kebabcase": "^4.1.1",
     "lodash.snakecase": "^4.1.1",
     "prompts": "^2.4.2",
     "tsup": "^8.1.0",

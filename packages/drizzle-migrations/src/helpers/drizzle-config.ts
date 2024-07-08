@@ -1,8 +1,7 @@
 import fs from 'node:fs'
 import path from 'node:path'
 import * as tsx from 'tsx/cjs/api'
-import type { ConfigDialect, DrizzleMigrationsConfig, DBClient } from '..'
-import type { SQLWrapper } from 'drizzle-orm'
+import type { ConfigDialect, DBClient, DrizzleMigrationsConfig } from '..'
 
 export function resolveDrizzleConfig() {
   const configFileNames = ['drizzle.config.ts', 'drizzle.config.tsx']
@@ -76,7 +75,12 @@ export async function buildMigrationContext(drizzleConfigPath: string) {
     migrationTable: drizzleConfig.migrations?.table || 'drizzle_migrations',
     migrationSchema: drizzleConfig.migrations?.schema || 'public',
     opts: {},
-    seed: drizzleConfig.seed,
+    seed: drizzleConfig.seed
+      ? {
+          dirPath: path.join(drizzleFolder, drizzleConfig.seed.dirPath),
+          defaultSeeder: drizzleConfig.seed.defaultSeeder || 'db-seeder',
+        }
+      : undefined,
   } as MigrationContext
 }
 

@@ -50,6 +50,9 @@ importers:
       lodash.camelcase:
         specifier: ^4.3.0
         version: 4.3.0
+      lodash.kebabcase:
+        specifier: ^4.1.1
+        version: 4.1.1
       lodash.snakecase:
         specifier: ^4.1.1
         version: 4.1.1
@@ -66,6 +69,9 @@ importers:
       '@types/lodash.camelcase':
         specifier: ^4.3.9
         version: 4.3.9
+      '@types/lodash.kebabcase':
+        specifier: ^4.1.9
+        version: 4.1.9
       '@types/lodash.snakecase':
         specifier: ^4.1.9
         version: 4.1.9
@@ -1004,6 +1010,12 @@ packages:
       '@types/lodash': 4.17.6
     dev: true
 
+  /@types/lodash.kebabcase@4.1.9:
+    resolution: {integrity: sha512-kPrrmcVOhSsjAVRovN0lRfrbuidfg0wYsrQa5IYuoQO1fpHHGSme66oyiYA/5eQPVl8Z95OA3HG0+d2SvYC85w==}
+    dependencies:
+      '@types/lodash': 4.17.6
+    dev: true
+
   /@types/lodash.snakecase@4.1.9:
     resolution: {integrity: sha512-emBZJUiNlo+QPXr1junMKXwzHJK9zbFvTVdyAoorFcm1YRsbzkZCYPTVMM9AW+dlnA6utG7vpfvOs8alxv/TMw==}
     dependencies:
@@ -1552,6 +1564,10 @@ packages:
 
   /lodash.camelcase@4.3.0:
     resolution: {integrity: sha512-TwuEnCnxbc3rAvhf/LbG7tJUDzhqXyFnv3dtzLOPgCG/hODL7WFnsbwktkD7yUV0RrreP/l1PALq/YSg6VvjlA==}
+    dev: false
+
+  /lodash.kebabcase@4.1.1:
+    resolution: {integrity: sha512-N8XRTIMMqqDgSy4VLKPnJ/+hpGZN+PHQiJnSenYqPaVV/NCqEogTnAdZLQiGKhxX+JCs8waWq2t1XHWKOmlY8g==}
     dev: false
 
   /lodash.snakecase@4.1.1:
