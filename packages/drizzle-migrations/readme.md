@@ -47,7 +47,7 @@ export default defineConfig({
   }, 
 
   // only needed if you want to use seed commands
-  seed: { dirsPath: './src/seeders', defaultSeeder: 'db-seeder' }
+  seed: { dirPath: './src/seeders', defaultSeeder: 'db-seeder' }
 })
 ```
 
