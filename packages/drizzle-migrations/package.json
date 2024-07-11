@@ -14,6 +14,15 @@
   "bin": {
     "drizzle-migrations": "dist/cli-entry.cjs"
   },
+  "dependencies": {
+    "commander": "^12.1.0",
+    "console-table-printer": "^2.12.1",
+    "lodash.camelcase": "^4.3.0",
+    "lodash.kebabcase": "^4.1.1",
+    "lodash.snakecase": "^4.1.1",
+    "prompts": "^2.4.2",
+    "tsx": "^4.16.2"
+  },
   "devDependencies": {
     "@types/lodash.camelcase": "^4.3.9",
     "@types/lodash.kebabcase": "^4.1.9",
@@ -21,7 +30,8 @@
     "@types/node": "^20.14.9",
     "@types/prompts": "^2.4.9",
     "rimraf": "^5.0.8",
-    "typescript": "^5.5.3"
+    "typescript": "^5.5.3",
+    "tsup": "^8.1.0"
   },
   "keywords": [
     "drizzle",
@@ -34,16 +44,6 @@
   ],
   "author": "Dominik Repkovský",
   "license": "ISC",
-  "dependencies": {
-    "commander": "^12.1.0",
-    "console-table-printer": "^2.12.1",
-    "lodash.camelcase": "^4.3.0",
-    "lodash.kebabcase": "^4.1.1",
-    "lodash.snakecase": "^4.1.1",
-    "prompts": "^2.4.2",
-    "tsup": "^8.1.0",
-    "tsx": "^4.16.2"
-  },
   "main": "dist/index.cjs",
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
