@@ -173,4 +173,9 @@ program
     process.exit(0)
   })
 
-program.parse()
+try {
+  program.parse()
+} catch (e) {
+  console.error(e)
+  process.exit(1)
+}
