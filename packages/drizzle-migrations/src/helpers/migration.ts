@@ -2,9 +2,13 @@ import { sql } from 'drizzle-orm'
 import fs from 'node:fs'
 import fsp from 'node:fs/promises'
 import type { MigrationContext } from './drizzle-config'
+import { getFileExtension } from './misc-utils'
+
+const VALID_MIGRATION_EXTENSIONS = new Set(['.ts', '.js', '.cjs', '.mjs', '.tsx', '.jsx'])
 
 /**
  * Ordered migration files in ascending order. That means the first file is the oldest migration.
+ * TODO: glob search for migration files
  */
 export async function getMigrationFiles(ctx: MigrationContext) {
   const dir = ctx.migrationFolder
@@ -12,21 +16,11 @@ export async function getMigrationFiles(ctx: MigrationContext) {
     throw new Error(`Migration folder ${dir} does not exist. Please create it first.`)
   }
 
-  const jsonFiles = (await fsp.readdir(dir)).filter((file) => file.endsWith('.json')).sort()
-
-  const tsFiles = (await fsp.readdir(dir)).filter((file) => file.endsWith('.ts')).sort()
-
-  const pairs = jsonFiles.map((json) => {
-    const ts = tsFiles.find((tsFile) => tsFile.startsWith(json.replace('.json', '')))
-    if (!ts)
-      throw new Error(
-        `Migration file ${json} has no corresponding typescript file. Your migration files are corrupted. Please fix this manually by removing the corrupted migration or regenerating all files again.`
-      )
-
-    return { json, ts }
+  const tsFiles = (await fsp.readdir(dir)).filter((file) => {
+    return VALID_MIGRATION_EXTENSIONS.has(getFileExtension(file))
   })
 
-  return pairs
+  return { ts: tsFiles }
 }
 
 export async function ensureMigrationTable(ctx: MigrationContext) {

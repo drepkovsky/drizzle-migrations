@@ -4,7 +4,14 @@ import * as tsx from 'tsx/cjs/api'
 import type { ConfigDialect, DBClient, DrizzleMigrationsConfig } from '..'
 
 export function resolveDrizzleConfig() {
-  const configFileNames = ['drizzle.config.ts', 'drizzle.config.tsx']
+  const configFileNames = [
+    'drizzle.config.ts',
+    'drizzle.config.tsx',
+    'drizzle.config.js',
+    'drizzle.config.jsx',
+    'drizzle.config.cjs',
+    'drizzle.config.mjs',
+  ]
   let currentDir = process.cwd()
 
   while (true) {

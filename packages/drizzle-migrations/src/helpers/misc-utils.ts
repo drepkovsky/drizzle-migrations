@@ -7,3 +7,7 @@ export function isNullish(value: unknown): value is null | undefined {
 export function getFileNameWithoutExtension(filePath: string): string {
   return path.basename(filePath, path.extname(filePath))
 }
+
+export function getFileExtension(filePath: string): string {
+  return path.extname(filePath)
+}
