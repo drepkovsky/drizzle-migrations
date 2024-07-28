@@ -20,7 +20,7 @@ export async function getMigrationFiles(ctx: MigrationContext) {
     return VALID_MIGRATION_EXTENSIONS.has(getFileExtension(file))
   })
 
-  return { ts: tsFiles }
+  return tsFiles
 }
 
 export async function ensureMigrationTable(ctx: MigrationContext) {

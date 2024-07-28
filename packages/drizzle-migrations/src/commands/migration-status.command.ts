@@ -6,9 +6,7 @@ export class MigrationStatusCommand extends BaseCommand {
   async run(): Promise<void> {
     const migrationFiles = await getMigrationFiles(this.ctx)
 
-    const migrationNames = migrationFiles.map((file) =>
-      file.ts.split('/').pop()!.replace('.ts', '')
-    )
+    const migrationNames = migrationFiles.map((file) => file.split('/').pop()!.replace('.ts', ''))
 
     const migrationTable: {
       name: string

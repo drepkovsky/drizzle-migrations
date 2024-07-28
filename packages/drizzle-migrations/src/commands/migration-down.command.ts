@@ -46,7 +46,7 @@ export class MigrationDownCommand extends BaseCommand<{ batchToRollDownTo?: numb
     await startTransaction(this.ctx, async (trx) => {
       for (const migrationFile of migrationFiles) {
         // check if migration did not run already
-        const migrationName = migrationFile.ts.split('/').pop()!.replace('.ts', '')
+        const migrationName = migrationFile.split('/').pop()!.replace('.ts', '')
         const batch = await getMigrationBatch(migrationName, { ...this.ctx, client: trx as any })
 
         if (
@@ -61,7 +61,7 @@ export class MigrationDownCommand extends BaseCommand<{ batchToRollDownTo?: numb
         }
 
         const migration = tsx.require(
-          path.join(this.ctx.migrationFolder, migrationFile.ts),
+          path.join(this.ctx.migrationFolder, migrationFile),
           __filename
         ) as Migration<ConfigDialect>
         if (!migration.down) {
