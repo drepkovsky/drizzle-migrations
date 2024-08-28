@@ -1,5 +1,9 @@
 # Drizzle migrations
 
+```bash
+ This repository is a fork from drepkovsky/drizzle-migrations. Thanks to drepkovsky.
+```
+
 Simple tool that ads `up` and `down` migration capability for drizzle projects.
 
 

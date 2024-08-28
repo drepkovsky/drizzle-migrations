@@ -1,5 +1,9 @@
 # Drizzle migrations
 
+```bash
+ This repository is a fork from drepkovsky/drizzle-migrations. Thanks to drepkovsky.
+```
+
 Simple tool that ads `up` and `down` migration capability for drizzle projects.
 
 
@@ -17,7 +21,7 @@ npm install @llong2195/drizzle-migrations # or yarn,pnpm,bun
 
 ## Configuration
 
-To make this work you have to make small changes inside your `drizzle.config.ts` file
+To make this work you have to make small changes inside your `drizzle.migration.config.ts` file
 
 ```ts
 import { defineConfig } from '@llong2195/drizzle-migrations'
