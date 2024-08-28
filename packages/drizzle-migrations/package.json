@@ -1,5 +1,5 @@
 {
-  "name": "@drepkovsky/drizzle-migrations",
+  "name": "@llong2195/drizzle-migrations",
   "version": "0.5.0",
   "description": "Tiny tool for managing migrations in Drizzle",
   "scripts": {
@@ -8,8 +8,8 @@
     "release": "pnpm build && pnpm publish --access public"
   },
   "peerDependencies": {
-    "drizzle-kit": "^0.22.8",
-    "drizzle-orm": "^0.31.2"
+    "drizzle-kit": "^0.24.2",
+    "drizzle-orm": "^0.33.0"
   },
   "bin": {
     "drizzle-migrations": "dist/cli-entry.cjs"
@@ -40,9 +40,9 @@
     "up migration",
     "down migration",
     "rollback",
-    "drepkovsky"
+    "llong2195"
   ],
-  "author": "Dominik Repkovský",
+  "author": "Nguyen Duy Long - llong2195",
   "license": "ISC",
   "main": "dist/index.cjs",
   "module": "dist/index.mjs",

@@ -1,11 +1,12 @@
-import { defineConfig as defineConfigOg, type Config } from 'drizzle-kit'
-import type { BetterSQLite3Database } from 'drizzle-orm/better-sqlite3'
-import type { MySql2Database } from 'drizzle-orm/mysql2'
-import type { PostgresJsDatabase } from 'drizzle-orm/postgres-js'
-export * from './seed/_base.seeder'
-export * from './seed/seed-runner'
+import { defineConfig as defineConfigOg, type Config } from 'drizzle-kit';
+import type { BetterSQLite3Database } from 'drizzle-orm/better-sqlite3';
+import type { MySql2Database } from 'drizzle-orm/mysql2';
+import type { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
+import type { NodePgDatabase } from 'drizzle-orm/node-postgres';
+export * from './seed/_base.seeder';
+export * from './seed/seed-runner';
 
-export type ConfigDialect = Config['dialect']
+export type ConfigDialect = Config['dialect'];
 export type DrizzleMigrationsConfig = Config & {
   /**
    * Configuration for seeders
@@ -14,37 +15,39 @@ export type DrizzleMigrationsConfig = Config & {
     /**
      * Path to the directory containing seeders
      */
-    dirPath: string
+    dirPath: string;
     /**
      * Seeder to run by default if no seeder name is specified
      * @default 'db-seeder'
      */
-    defaultSeeder?: string
-  }
+    defaultSeeder?: string;
+  };
 } & (
     | {
-        dialect: 'postgresql'
-        getMigrator: () => Promise<PostgresJsDatabase>
+        dialect: 'postgresql';
+        getMigrator: () =>
+          | Promise<PostgresJsDatabase>
+          | Promise<NodePgDatabase>;
       }
     | {
-        dialect: 'sqlite'
-        getMigrator: () => Promise<BetterSQLite3Database>
+        dialect: 'sqlite';
+        getMigrator: () => Promise<BetterSQLite3Database>;
       }
     | {
-        dialect: 'mysql'
-        getMigrator: () => Promise<MySql2Database>
+        dialect: 'mysql';
+        getMigrator: () => Promise<MySql2Database>;
       }
-  )
+  );
 
 /**
  * @deprecated Use `defineConfig` instead
  */
 export function defineConfigWithMigrator(config: DrizzleMigrationsConfig) {
-  return defineConfigOg(config)
+  return defineConfigOg(config);
 }
 
 export function defineConfig(config: DrizzleMigrationsConfig) {
-  return defineConfigOg(config)
+  return defineConfigOg(config);
 }
 
 export type DBClient<TDialect extends ConfigDialect> = TDialect extends 'sqlite'
@@ -52,14 +55,14 @@ export type DBClient<TDialect extends ConfigDialect> = TDialect extends 'sqlite'
   : TDialect extends 'mysql'
     ? MySql2Database
     : TDialect extends 'postgresql'
-      ? PostgresJsDatabase
-      : never
+      ? PostgresJsDatabase | NodePgDatabase
+      : never;
 
 export type MigrationArgs<TDialect extends ConfigDialect> = {
-  db: DBClient<TDialect>
-}
+  db: DBClient<TDialect>;
+};
 
 export type Migration<TDialect extends ConfigDialect> = {
-  up: (args: MigrationArgs<TDialect>) => Promise<void>
-  down: (args: MigrationArgs<TDialect>) => Promise<void>
-}
+  up: (args: MigrationArgs<TDialect>) => Promise<void>;
+  down: (args: MigrationArgs<TDialect>) => Promise<void>;
+};

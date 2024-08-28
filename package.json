@@ -3,18 +3,16 @@
   "version": "0.1.0",
   "description": "",
   "main": "index.js",
-  "scripts": {
-    "fix": "pnpm biome check --apply-unsafe ./packages/**/src",
-    "format": "pnpm biome format --write ./packages/**/src",
-    "lint": "pnpm biome lint ./packages/**/src",
+  "scripts": { 
+    "format": "pnpm prettier --write \"packages/drizzle-migrations/src/**/*.ts\"",
     "release": "cd ./packages/drizzle-migrations && pnpm release"
   },
   "devDependencies": {
-    "@biomejs/biome": "^1.8.3",
     "@types/node": "^20.14.9",
+    "prettier": "^3.3.3",
     "turbo": "^2.0.6"
   },
   "keywords": [],
-  "author": "Dominik Repkovský",
+  "author": "Nguyen Duy Long - llong2195",
   "license": "ISC"
 }
