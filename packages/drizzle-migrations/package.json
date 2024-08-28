@@ -42,7 +42,7 @@
     "rollback",
     "llong2195"
   ],
-  "author": "Dominik Repkovský",
+  "author": "Nguyen Duy Long - llong2195",
   "license": "ISC",
   "main": "dist/index.cjs",
   "module": "dist/index.mjs",
