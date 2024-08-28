@@ -1,4 +1,8 @@
-import { DrizzleSnapshotJSON } from 'drizzle-kit/api';
+import {
+  DrizzleSnapshotJSON,
+  generateDrizzleJson,
+  generateMigration,
+} from 'drizzle-kit/api';
 import { BaseCommand } from './_base.command';
 import fs from 'node:fs';
 import prompts from 'prompts';
@@ -15,10 +19,10 @@ export class MigrationGenerateCommand extends BaseCommand<GenerateMigrationOptio
       fs.mkdirSync(dir);
     }
 
-    const {
-      generateDrizzleJson,
-      generateMigration,
-    } = require('drizzle-kit/payload');
+    // const {
+    //   generateDrizzleJson,
+    //   generateMigration,
+    // } = require('drizzle-kit/payload');
 
     const [yyymmdd, hhmmss] = new Date().toISOString().split('T');
     const formattedDate = yyymmdd!.replace(/\D/g, '');
@@ -94,10 +98,10 @@ export class MigrationGenerateCommand extends BaseCommand<GenerateMigrationOptio
     fs.writeFileSync(
       `${filePath}.ts`,
       this.getTemplate({
-        up: sqlStatementsUp.length ? sqlStatementsUp?.join('\n') : undefined,
+        up: sqlStatementsUp.length ? sqlStatementsUp?.join('\n') : '',
         down: sqlStatementsDown.length
           ? sqlStatementsDown?.join('\n')
-          : undefined,
+          : '',
       }),
     );
 
@@ -130,7 +134,7 @@ export class MigrationGenerateCommand extends BaseCommand<GenerateMigrationOptio
     const executeCommand = this.ctx.dialect === 'sqlite' ? 'run' : 'execute';
     return `
   import { sql } from 'drizzle-orm'
-  import type { MigrationArgs } from '@drepkovsky/drizzle-migrations'
+  import type { MigrationArgs } from '@llong2195/drizzle-migrations'
 
   export async function up({ db }: MigrationArgs<'${
     this.ctx.dialect

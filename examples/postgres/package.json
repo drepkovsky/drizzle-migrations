@@ -4,13 +4,17 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "drizzle:create": "drizzle-migrations generate --name ",
+    "drizzle:status": "drizzle-migrations status",
+    "drizzle:up": "drizzle-migrations up",
+    "drizzle:down": "drizzle-migrations down"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@drepkovsky/drizzle-migrations": "workspace:*",
+    "@llong2195/drizzle-migrations": "workspace:*",
     "drizzle-kit": "^0.22.8",
     "drizzle-orm": "^0.31.4",
     "postgres": "^3.4.4"

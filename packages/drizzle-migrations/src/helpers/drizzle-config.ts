@@ -5,12 +5,12 @@ import type { ConfigDialect, DBClient, DrizzleMigrationsConfig } from '..';
 
 export function resolveDrizzleConfig() {
   const configFileNames = [
-    'drizzle.config.ts',
-    'drizzle.config.tsx',
-    'drizzle.config.js',
-    'drizzle.config.jsx',
-    'drizzle.config.cjs',
-    'drizzle.config.mjs',
+    'drizzle.migration.config.ts',
+    'drizzle.migration.config.tsx',
+    'drizzle.migration.config.js',
+    'drizzle.migration.config.jsx',
+    'drizzle.migration.config.cjs',
+    'drizzle.migration.config.mjs',
   ];
   let currentDir = process.cwd();
 
@@ -34,7 +34,7 @@ export function resolveDrizzleConfig() {
   }
 
   throw new Error(
-    'drizzle.config.ts{x} not found in the current directory or any parent directories.',
+    'drizzle.migration.config.ts{x} not found in the current directory or any parent directories.',
   );
 }
 

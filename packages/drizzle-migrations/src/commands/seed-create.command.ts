@@ -47,7 +47,7 @@ export class SeedCreateCommand extends BaseCommand<{ seederName: string }> {
     nameInPascal = nameInPascal.charAt(0).toUpperCase() + nameInPascal.slice(1);
 
     return `
-import { BaseSeeder, type SeederContext } from '@drepkovsky/drizzle-migrations'
+import { BaseSeeder, type SeederContext } from '@llong2195/drizzle-migrations'
 
 export default class ${nameInPascal} extends BaseSeeder<'${this.ctx.dialect}'> {
   async seed(ctx: SeederContext<'${this.ctx.dialect}'>) {

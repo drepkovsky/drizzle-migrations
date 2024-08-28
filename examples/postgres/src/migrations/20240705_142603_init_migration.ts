@@ -1,5 +1,5 @@
 import { sql } from 'drizzle-orm'
-import type { MigrationArgs } from '@drepkovsky/drizzle-migrations'
+import type { MigrationArgs } from '@llong2195/drizzle-migrations'
 
 export async function up({ db }: MigrationArgs<'postgresql'>): Promise<void> {
   await db.execute(sql`

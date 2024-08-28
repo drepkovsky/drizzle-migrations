@@ -1,5 +1,5 @@
 {
-  "name": "@drepkovsky/drizzle-migrations",
+  "name": "@llong2195/drizzle-migrations",
   "version": "0.5.0",
   "description": "Tiny tool for managing migrations in Drizzle",
   "scripts": {
@@ -40,7 +40,7 @@
     "up migration",
     "down migration",
     "rollback",
-    "drepkovsky"
+    "llong2195"
   ],
   "author": "Dominik Repkovský",
   "license": "ISC",

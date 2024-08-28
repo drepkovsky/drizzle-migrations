@@ -12,19 +12,19 @@ Automatic migration generation for drizzle was adapted from the **PayloadCMS** r
 ## Installation
 
 ```bash
-npm install @drepkovsky/drizzle-migrations # or yarn,pnpm,bun
+npm install @llong2195/drizzle-migrations # or yarn,pnpm,bun
 ```
 
 ## Configuration
 
-To make this work you have to make small changes inside your `drizzle.config.ts` file
+To make this work you have to make small changes inside your `drizzle.migration.config.ts` file
 
 ```ts
-import { defineConfig } from '@drepkovsky/drizzle-migrations'
+import { defineConfig } from '@llong2195/drizzle-migrations'
 import { drizzle } from 'drizzle-orm/postgres-js'
 import postgres from 'postgres'
 
-// notice how we are not using `defineConfig` from drizzle but from `@drepkovsky/drizzle-migrations`
+// notice how we are not using `defineConfig` from drizzle but from `@llong2195/drizzle-migrations`
 export default defineConfig({
   schema: './src/schema.ts',
   dialect: 'postgresql',
@@ -103,7 +103,7 @@ npm run drizzle-migrations seed:run --name <seeder-name> // default seeder is db
 
 ```ts
 import { sql } from 'drizzle-orm'
-import type { MigrationArgs } from '@drepkovsky/drizzle-migrations'
+import type { MigrationArgs } from '@llong2195/drizzle-migrations'
 
 export async function up({ db }: MigrationArgs<'postgresql'>): Promise<void> {
   await db.execute(sql`

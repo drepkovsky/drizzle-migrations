@@ -2,6 +2,7 @@ import { defineConfig as defineConfigOg, type Config } from 'drizzle-kit';
 import type { BetterSQLite3Database } from 'drizzle-orm/better-sqlite3';
 import type { MySql2Database } from 'drizzle-orm/mysql2';
 import type { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
+import type { NodePgDatabase } from 'drizzle-orm/node-postgres';
 export * from './seed/_base.seeder';
 export * from './seed/seed-runner';
 
@@ -24,7 +25,9 @@ export type DrizzleMigrationsConfig = Config & {
 } & (
     | {
         dialect: 'postgresql';
-        getMigrator: () => Promise<PostgresJsDatabase>;
+        getMigrator: () =>
+          | Promise<PostgresJsDatabase>
+          | Promise<NodePgDatabase>;
       }
     | {
         dialect: 'sqlite';
@@ -52,7 +55,7 @@ export type DBClient<TDialect extends ConfigDialect> = TDialect extends 'sqlite'
   : TDialect extends 'mysql'
     ? MySql2Database
     : TDialect extends 'postgresql'
-      ? PostgresJsDatabase
+      ? PostgresJsDatabase | NodePgDatabase
       : never;
 
 export type MigrationArgs<TDialect extends ConfigDialect> = {
