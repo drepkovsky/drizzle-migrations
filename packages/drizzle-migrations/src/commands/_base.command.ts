@@ -1,6 +1,8 @@
-import type { MigrationContext } from '../helpers/drizzle-config'
+import type { MigrationContext } from '../helpers/drizzle-config';
 
-export abstract class BaseCommand<TOpts extends Record<string, any> = Record<string, any>> {
+export abstract class BaseCommand<
+  TOpts extends Record<string, any> = Record<string, any>,
+> {
   constructor(protected readonly ctx: MigrationContext<TOpts>) {}
-  abstract run(): Promise<void>
+  abstract run(): Promise<void>;
 }
