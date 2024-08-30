@@ -1,6 +1,6 @@
 {
   "name": "@llong2195/drizzle-migrations",
-  "version": "0.5.0",
+  "version": "1.0.0",
   "description": "Tiny tool for managing migrations in Drizzle",
   "scripts": {
     "build": "rimraf dist && tsup",

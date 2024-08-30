@@ -2,7 +2,6 @@
   "name": "postgres",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "drizzle:create": "drizzle-migrations generate --name ",
@@ -15,8 +14,8 @@
   "license": "ISC",
   "dependencies": {
     "@llong2195/drizzle-migrations": "workspace:*",
-    "drizzle-kit": "^0.22.8",
-    "drizzle-orm": "^0.31.4",
-    "postgres": "^3.4.4"
+    "drizzle-kit": "^0.24.2",
+    "drizzle-orm": "^0.33.0",
+    "pg": "^8.12.0"
   }
 }

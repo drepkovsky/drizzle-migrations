@@ -1,10 +1,11 @@
 import path from 'node:path';
 import tsx from 'tsx/cjs/api';
-import { SeedRunner, type ConfigDialect } from '..';
+import { type ConfigDialect } from '..';
+import { getFileNameWithoutExtension } from '../helpers/misc-utils';
 import { getSeederFiles } from '../helpers/seed';
 import type { BaseSeederConstructor } from '../seed/_base.seeder';
+import { SeedRunner } from '../seed/seed-runner';
 import { BaseCommand } from './_base.command';
-import { getFileNameWithoutExtension } from '../helpers/misc-utils';
 
 export class SeedRunCommand extends BaseCommand<{ seederName: string }> {
   async run() {

@@ -99,9 +99,7 @@ export class MigrationGenerateCommand extends BaseCommand<GenerateMigrationOptio
       `${filePath}.ts`,
       this.getTemplate({
         up: sqlStatementsUp.length ? sqlStatementsUp?.join('\n') : '',
-        down: sqlStatementsDown.length
-          ? sqlStatementsDown?.join('\n')
-          : '',
+        down: sqlStatementsDown.length ? sqlStatementsDown?.join('\n') : '',
       }),
     );
 

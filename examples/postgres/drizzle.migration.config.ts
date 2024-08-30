@@ -1,6 +1,7 @@
 import { defineConfig } from '@llong2195/drizzle-migrations';
-import { drizzle } from 'drizzle-orm/postgres-js';
-import postgres from 'postgres';
+import { drizzle } from 'drizzle-orm/node-postgres';
+import { Pool } from 'pg';
+
 export default defineConfig({
   schema: './src/schema.ts',
   dialect: 'postgresql',
@@ -19,14 +20,11 @@ export default defineConfig({
     table: 'drizzle_migrations',
   },
   getMigrator: async (): Promise<any> => {
-    const migrationClient = postgres(
-      'postgres://postgres:postgres@localhost/postgres-db',
-      {
-        max: 1,
-      },
-    );
+    const client = new Pool({
+      connectionString: "postgres://postgres:postgres@localhost/postgres-db",
+    });
 
-    return drizzle(migrationClient);
+    return drizzle(client);
   },
 
   seed: { dirPath: './src/seeders', defaultSeeder: 'default-seeder' },

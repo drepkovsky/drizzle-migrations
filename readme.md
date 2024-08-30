@@ -25,7 +25,7 @@ To make this work you have to make small changes inside your `drizzle.migration.
 
 ```ts
 import { defineConfig } from '@llong2195/drizzle-migrations'
-import { drizzle } from 'drizzle-orm/postgres-js'
+import { drizzle } from 'drizzle-orm/node-postgres'
 import postgres from 'postgres'
 
 // notice how we are not using `defineConfig` from drizzle but from `@llong2195/drizzle-migrations`

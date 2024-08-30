@@ -1,5 +1,5 @@
 {
-  "id": "e58ae17e-54fe-493b-b7b7-c427ec53ce26",
+  "id": "cae61cad-23bf-49f1-a75f-70627f54b599",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -17,6 +17,12 @@
         "title": {
           "name": "title",
           "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "new_column": {
+          "name": "new_column",
+          "type": "varchar",
           "primaryKey": false,
           "notNull": false
         },
@@ -83,6 +89,7 @@
   },
   "enums": {},
   "schemas": {},
+  "sequences": {},
   "_meta": {
     "schemas": {},
     "tables": {},
