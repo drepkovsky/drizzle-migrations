@@ -1,5 +1,5 @@
 import { BaseCommand } from './_base.command'
-import type { DrizzleSnapshotJSON } from 'drizzle-kit/payload'
+import type { DrizzleSnapshotJSON } from 'drizzle-kit/api'
 import fs from 'node:fs'
 import prompts from 'prompts'
 type GenerateMigrationOptions = {
@@ -15,7 +15,7 @@ export class MigrationGenerateCommand extends BaseCommand<GenerateMigrationOptio
       fs.mkdirSync(dir)
     }
 
-    const { generateDrizzleJson, generateMigration } = require('drizzle-kit/payload')
+    const { generateDrizzleJson, generateMigration } = require('drizzle-kit/api')
 
     const [yyymmdd, hhmmss] = new Date().toISOString().split('T')
     const formattedDate = yyymmdd!.replace(/\D/g, '')
