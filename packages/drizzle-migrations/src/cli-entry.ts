@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 import { Command } from 'commander'
 import toKebabCase from 'lodash.kebabcase'
 import toSnakeCase from 'lodash.snakecase'
