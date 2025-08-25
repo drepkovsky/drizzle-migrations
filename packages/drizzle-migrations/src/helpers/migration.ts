@@ -34,7 +34,7 @@ export async function ensureMigrationTable(ctx: MigrationContext) {
     // ensure table
     await ctx.client.execute(
       sql.raw(
-        `CREATE TABLE IF NOT EXISTS "${migrationSchema}"."${migrationTable}" (name TEXT PRIMARY KEY, batch INT NOT NULL)`
+        `CREATE TABLE IF NOT EXISTS "${migrationSchema}"."${migrationTable}" (name TEXT PRIMARY KEY, batch INT NOT NULL, index SERIAL NOT NULL); ALTER TABLE "${migrationSchema}"."${migrationTable}" ADD COLUMN IF NOT EXISTS index SERIAL NOT NULL;`
       )
     )
   }
@@ -42,7 +42,7 @@ export async function ensureMigrationTable(ctx: MigrationContext) {
   if (ctx.dialect === 'mysql') {
     await ctx.client.execute(
       sql.raw(
-        `CREATE TABLE IF NOT EXISTS "${migrationTable}" (name TEXT PRIMARY KEY, batch INT NOT NULL)`
+        `CREATE TABLE IF NOT EXISTS "${migrationTable}" (name TEXT PRIMARY KEY, batch INT NOT NULL, index SERIAL NOT NULL); ALTER TABLE "${migrationTable}" ADD COLUMN IF NOT EXISTS index SERIAL NOT NULL;`
       )
     )
   }
@@ -50,7 +50,7 @@ export async function ensureMigrationTable(ctx: MigrationContext) {
   if (ctx.dialect === 'sqlite') {
     await ctx.client.run(
       sql.raw(
-        `CREATE TABLE IF NOT EXISTS "${migrationTable}" (name TEXT PRIMARY KEY, batch INT NOT NULL)`
+        `CREATE TABLE IF NOT EXISTS "${migrationTable}" (name TEXT PRIMARY KEY, batch INT NOT NULL, index SERIAL NOT NULL); ALTER TABLE "${migrationTable}" ADD COLUMN IF NOT EXISTS index SERIAL NOT NULL;`
       )
     )
   }
@@ -170,4 +170,38 @@ export function deleteMigrationUntilBatch(batch: number, ctx: MigrationContext) 
     )
   }
   throw new Error('Unsupported dialect')
+}
+
+export function getMigrationWithHighestIndex(ctx: MigrationContext) {
+  if (ctx.dialect === "sqlite") {
+    return ctx.client
+      .run(
+        sql.raw(
+          `SELECT name FROM "${ctx.migrationTable}" ORDER BY \`index\` DESC LIMIT 1`
+        )
+      )
+      .then((r: any) => r[0]?.name as string | undefined);
+  }
+  if (ctx.dialect === "mysql") {
+    return ctx.client
+      .execute(
+        sql.raw(
+          `SELECT name FROM "${ctx.migrationTable}" ORDER BY \`index\` DESC LIMIT 1`
+        )
+      )
+      .then((r: any) => r[0]?.name as string | undefined);
+  }
+  if (ctx.dialect === "postgresql") {
+    return ctx.client
+      .execute(
+        sql.raw(
+          `SELECT name FROM "${ctx.migrationSchema}"."${ctx.migrationTable}" ORDER BY "index" DESC LIMIT 1`
+        )
+      )
+      .then((r) => {
+        return r[0]?.name as string | undefined;
+      });
+  }
+
+  throw new Error("Unsupported dialect");
 }

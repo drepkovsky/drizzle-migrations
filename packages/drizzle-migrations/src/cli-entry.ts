@@ -4,6 +4,7 @@ import { Command } from 'commander'
 import toKebabCase from 'lodash.kebabcase'
 import toSnakeCase from 'lodash.snakecase'
 import { MigrationDownCommand } from './commands/migration-down.command'
+import { MigrationDownOneCommand } from './commands/migration-down-one.command'
 import { MigrationGenerateCommand } from './commands/migration-generate.command'
 import { MigrationStatusCommand } from './commands/migration-status.command'
 import { MigrationUpCommand } from './commands/migration-up.command'
@@ -77,6 +78,16 @@ program
     await command.run()
     process.exit(0)
   })
+
+  program
+    .command("down-one")
+    .description("Rollback only the migration with the highest index")
+    .action(async () => {
+      const ctx = await buildMigrationContext(resolveDrizzleConfig());
+      const command = new MigrationDownOneCommand(ctx);
+      await command.run();
+      process.exit(0);
+    });
 
 program
   .command('status')
